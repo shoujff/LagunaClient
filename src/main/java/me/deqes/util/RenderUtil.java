@@ -29,5 +29,15 @@ public class RenderUtil implements Wrapper {
         context.drawText(mc.textRenderer, text, (int) (x / scale), (int) (y / scale), color.getRGB(), false);
         context.getMatrices().popMatrix();
     }
+    public static void drawBorder(DrawContext context, int x, int y, int width, int height, int thickness, Color color) {
+        // Верхняя граница
+        context.fill(x, y, x + width, y + thickness, color.getRGB());
+        // Нижняя граница
+        context.fill(x, y + height - thickness, x + width, y + height, color.getRGB());
+        // Левая граница
+        context.fill(x, y + thickness, x + thickness, y + height - thickness, color.getRGB());
+        // Правая граница
+        context.fill(x + width - thickness, y + thickness, x + width, y + height - thickness, color.getRGB());
+    }
 }
 

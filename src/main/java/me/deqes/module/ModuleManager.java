@@ -1,10 +1,11 @@
 package me.deqes.module;
 
 import com.google.common.eventbus.Subscribe;
+import com.ibm.icu.impl.Norm2AllModes;
 import lombok.Getter;
 import me.deqes.Laguna;
 import me.deqes.event.EventKey;
-import me.deqes.module.impl.render.Watermark;
+import me.deqes.module.impl.render.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ public class ModuleManager {
     public ModuleManager()
     {
         Laguna.getInstance().getEventBus().register(this);
-        addModules( new Watermark());
+        addModules( new Watermark(), new SwingAnimation(), new JumpCircles(), new Notifications(), new ChunkAnimator());
     }
     private void addModules(Module... modules){
         for(Module module : modules){

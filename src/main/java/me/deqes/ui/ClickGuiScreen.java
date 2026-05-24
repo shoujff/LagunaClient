@@ -40,17 +40,29 @@ public class ClickGuiScreen extends Screen {
         panelY = (mc.getWindow().getScaledHeight() - panelHeight) / 2;
 
         for (Category category : Category.values()) {
-            categoryElements.add(new CategoryElement(category));
+            CategoryElement element = new CategoryElement(category);
+            element.setParent(this);  // ВАЖНО: передаем ссылку на экран
+            categoryElements.add(element);
         }
         for (Module module : Laguna.getInstance().getModuleManager().getModules()) {
             moduleElements.add(new ModuleElement(module));
         }
+
+
+        // Выбираем первую категорию по умолчанию
+        if (!categoryElements.isEmpty() && selectedCategory == null) {
+            selectedCategory = categoryElements.get(0);
+            selectedCategory.setSelected(true);
+        }
+
         Laguna.getInstance().getEventBus().register(this);
     }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+
         // Затемнение фона
+
         RenderUtil.drawRect(context, 0, 0, mc.getWindow().getScaledWidth(),
                 mc.getWindow().getScaledHeight(), new Color(0, 0, 0, 150));
 
@@ -61,16 +73,17 @@ public class ClickGuiScreen extends Screen {
         }
 
         // Основная панель
-        RenderUtil.drawRect(context, panelX, panelY, panelWidth, panelHeight, new Color(20, 20, 25, 245));
+        RenderUtil.drawRect(context, panelX, panelY, panelWidth, panelHeight, new Color(0, 0, 0, 245));
 
         // Рамка
-        RenderUtil.drawRect(context, panelX, panelY, panelWidth, 2, new Color(80, 180, 80, 200)); // Верхняя зеленая полоска
-        RenderUtil.drawRect(context, panelX, panelY + panelHeight - 1, panelWidth, 1, new Color(60, 60, 70));
-        RenderUtil.drawRect(context, panelX, panelY, 1, panelHeight, new Color(60, 60, 70));
-        RenderUtil.drawRect(context, panelX + panelWidth - 1, panelY, 1, panelHeight, new Color(60, 60, 70));
+        RenderUtil.drawRect(context, panelX, panelY, panelWidth, 2, new Color(255, 255, 255)); // Верхняя зеленая полоска
+        RenderUtil.drawRect(context, panelX, panelY + panelHeight - 1, panelWidth, 1, new Color(255, 255, 255));
+        RenderUtil.drawRect(context, panelX, panelY + 2, panelWidth, 32, new Color(30, 30, 38, 255));
+        RenderUtil.drawRect(context, panelX, panelY, 1, panelHeight, new Color(255, 255, 255));
+        RenderUtil.drawRect(context, panelX + panelWidth - 1, panelY, 1, panelHeight, new Color(255, 255, 255));
 
         // Заголовок
-        RenderUtil.drawRect(context, panelX, panelY + 2, panelWidth, 32, new Color(30, 30, 38, 255));
+
 
         // Название
         String title = "LAGUNA CLIENT";
@@ -80,13 +93,10 @@ public class ClickGuiScreen extends Screen {
 
         // Декоративная линия под названием
         RenderUtil.drawRect(context, panelX + panelWidth/2 - 35, panelY + 28, 70, 2,
-                new Color(80, 180, 80));
+                new Color(255, 255, 255));
 
         // Drag зона (точечки)
-        for (int i = 0; i < 3; i++) {
-            RenderUtil.drawRect(context, panelX + 12 + i * 4, panelY + 16, 2, 2, new Color(150, 150, 150));
-            RenderUtil.drawRect(context, panelX + 12 + i * 4, panelY + 22, 2, 2, new Color(150, 150, 150));
-        }
+
 
         // Drag & Drop
         if (dragging) {
@@ -149,7 +159,7 @@ public class ClickGuiScreen extends Screen {
                     new Color(40, 40, 50, 150));
             // Ползунок
             RenderUtil.drawRect(context, panelX + panelWidth - 12, barY, 4, barHeight,
-                    new Color(80, 180, 80, 200));
+                    new Color(0, 0, 0, 200));
         }
 
         // Рендер модулей
@@ -252,5 +262,5 @@ public class ClickGuiScreen extends Screen {
         return false;
     }
 
-    public static CategoryElement selectedCategory = null;
+    public CategoryElement selectedCategory = null;
 }
