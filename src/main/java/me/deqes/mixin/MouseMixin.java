@@ -2,6 +2,7 @@ package me.deqes.mixin;
 import lombok.AllArgsConstructor;
 import me.deqes.Laguna;
 import me.deqes.event.EventMouse;
+import me.deqes.event.EventMouseScroll;
 import me.deqes.event.EventTick;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.input.MouseInput;
@@ -23,5 +24,15 @@ public class MouseMixin {
 
 
     }
+
+    @Inject(method = "onMouseScroll", at=@At("HEAD"))
+    public void onMouse(long window, double horizontal, double vertical, CallbackInfo ci){
+        double mouseX = mc.mouse.getX() * mc.getWindow().getScaledWidth() / mc.getWindow().getWidth();
+        double mouseY = mc.mouse.getY() * mc.getWindow().getScaledHeight() / mc.getWindow().getHeight();
+
+        EventMouseScroll eventMouse = new EventMouseScroll((int) vertical);
+        Laguna.getInstance().getEventBus().post(eventMouse);
+    }
+
 
 }
