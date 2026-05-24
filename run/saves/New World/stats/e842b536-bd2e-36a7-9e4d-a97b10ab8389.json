@@ -1,0 +1,30 @@
+{
+  "stats": {
+    "minecraft:mined": {
+      "minecraft:short_grass": 29,
+      "minecraft:tall_grass": 14,
+      "minecraft:poppy": 1,
+      "minecraft:bush": 2,
+      "minecraft:dandelion": 1
+    },
+    "minecraft:killed_by": {
+      "minecraft:enderman": 1,
+      "minecraft:zombie": 1
+    },
+    "minecraft:custom": {
+      "minecraft:sprint_one_cm": 4712,
+      "minecraft:time_since_rest": 189,
+      "minecraft:fall_one_cm": 2725,
+      "minecraft:walk_one_cm": 1298,
+      "minecraft:total_world_time": 9590,
+      "minecraft:fly_one_cm": 23628,
+      "minecraft:damage_taken": 540,
+      "minecraft:play_time": 1863,
+      "minecraft:damage_dealt": 41,
+      "minecraft:deaths": 2,
+      "minecraft:jump": 90,
+      "minecraft:time_since_death": 167
+    }
+  },
+  "DataVersion": 4671
+}

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "laguna2",
+  "version": "${version}",
+  "name": "Laguna2",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/laguna2/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.deqes.Laguna"
+    ]
+  },
+  "mixins": [
+    "laguna2.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
