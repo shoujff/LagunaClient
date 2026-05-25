@@ -214,7 +214,23 @@ public class ClickGuiScreen extends Screen {
     }
 
     // Обновите метод onKey в ClickGuiScreen:
-
+    @Subscribe
+    public void onMouseScroll(EventMouseScroll e) {
+        if (selectedCategory != null) {
+            // Проверяем, открыто ли меню настроек у какого-либо модуля
+            for (ModuleElement moduleElement : moduleElements) {
+                if (moduleElement.getModule().getCategory() == selectedCategory.getCategory()) {
+                    if (moduleElement.getSettingsMenu().isVisible()) {
+                        moduleElement.getSettingsMenu().mouseScrolled(e.getScroll());
+                        return;
+                    }
+                }
+            }
+            // Скролл для списка модулей
+            scrollOffset -= e.getScroll() * 15;
+            scrollOffset = Math.max(0, Math.min(scrollOffset, maxScroll));
+        }
+    }
     @Subscribe
     public void onKey(EventKey e) {
         if (e.getAction() != 1) return;
