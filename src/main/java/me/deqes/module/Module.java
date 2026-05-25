@@ -31,6 +31,7 @@ public class Module {
         System.out.println("d");
 
     }
+
     public boolean isEnabled() {
         return toggled;
     }

@@ -1,10 +1,12 @@
 package me.deqes.module;
 
 import com.google.common.eventbus.Subscribe;
-import com.ibm.icu.impl.Norm2AllModes;
 import lombok.Getter;
 import me.deqes.Laguna;
 import me.deqes.event.EventKey;
+import me.deqes.module.impl.combat.KillAura;
+import me.deqes.module.impl.movement.AutoSprint;
+import me.deqes.module.impl.player.NoDelay;
 import me.deqes.module.impl.render.*;
 
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ public class ModuleManager {
     public ModuleManager()
     {
         Laguna.getInstance().getEventBus().register(this);
-        addModules( new Watermark(), new SwingAnimation(), new JumpCircles(), new Notifications(), new ChunkAnimator());
+        addModules(new KillAura(), new FullBright(),new NoDelay(), new AutoSprint(),new Hud(), new SwingAnimation(), new Notifications(), new ChunkAnimator());
     }
     private void addModules(Module... modules){
         for(Module module : modules){

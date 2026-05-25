@@ -1,13 +1,9 @@
 package me.deqes.command;
 
-import com.google.common.eventbus.Subscribe;
 import lombok.Getter;
 import me.deqes.Laguna;
-import me.deqes.command.Command;
 import me.deqes.command.impl.BindCommand;
 import me.deqes.command.impl.HelpCommand;
-import me.deqes.event.EventKey;
-import me.deqes.module.impl.render.Watermark;
 
 
 import java.util.ArrayList;

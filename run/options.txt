@@ -86,14 +86,14 @@ notificationDisplayTime:1.0
 useNativeTransport:true
 mainHand:"right"
 attackIndicator:1
-tutorialStep:punch_tree
+tutorialStep:none
 mouseWheelSensitivity:1.0
 rawMouseInput:true
 allowCursorChanges:true
 glDebugVerbosity:1
 skipMultiplayerWarning:false
 hideMatchedNames:true
-joinedFirstServer:false
+joinedFirstServer:true
 syncChunkWrites:true
 showAutosaveIndicator:true
 allowServerListing:true
@@ -121,7 +121,7 @@ key_key.chat:key.keyboard.t
 key_key.playerlist:key.keyboard.tab
 key_key.pickItem:key.mouse.middle
 key_key.command:key.keyboard.slash
-key_key.socialInteractions:key.keyboard.d
+key_key.socialInteractions:key.keyboard.p
 key_key.toggleGui:key.keyboard.f1
 key_key.toggleSpectatorShaderEffects:key.keyboard.f4
 key_key.screenshot:key.keyboard.f2

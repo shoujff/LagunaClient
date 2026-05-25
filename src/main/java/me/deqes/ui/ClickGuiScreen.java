@@ -41,13 +41,13 @@ public class ClickGuiScreen extends Screen {
 
         for (Category category : Category.values()) {
             CategoryElement element = new CategoryElement(category);
-            element.setParent(this);  // ВАЖНО: передаем ссылку на экран
+            element.setParent(this);
             categoryElements.add(element);
         }
+
         for (Module module : Laguna.getInstance().getModuleManager().getModules()) {
             moduleElements.add(new ModuleElement(module));
         }
-
 
         // Выбираем первую категорию по умолчанию
         if (!categoryElements.isEmpty() && selectedCategory == null) {
@@ -62,11 +62,10 @@ public class ClickGuiScreen extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 
         // Затемнение фона
-
         RenderUtil.drawRect(context, 0, 0, mc.getWindow().getScaledWidth(),
                 mc.getWindow().getScaledHeight(), new Color(0, 0, 0, 150));
 
-        // Рисуем тень (простая, без RenderSystem)
+        // Тень
         for (int i = 8; i >= 1; i--) {
             RenderUtil.drawRect(context, panelX - i, panelY - i, panelWidth + i * 2, panelHeight + i * 2,
                     new Color(0, 0, 0, 15));
@@ -76,14 +75,11 @@ public class ClickGuiScreen extends Screen {
         RenderUtil.drawRect(context, panelX, panelY, panelWidth, panelHeight, new Color(0, 0, 0, 245));
 
         // Рамка
-        RenderUtil.drawRect(context, panelX, panelY, panelWidth, 2, new Color(255, 255, 255)); // Верхняя зеленая полоска
+        RenderUtil.drawRect(context, panelX, panelY, panelWidth, 2, new Color(255, 255, 255));
         RenderUtil.drawRect(context, panelX, panelY + panelHeight - 1, panelWidth, 1, new Color(255, 255, 255));
         RenderUtil.drawRect(context, panelX, panelY + 2, panelWidth, 32, new Color(30, 30, 38, 255));
         RenderUtil.drawRect(context, panelX, panelY, 1, panelHeight, new Color(255, 255, 255));
         RenderUtil.drawRect(context, panelX + panelWidth - 1, panelY, 1, panelHeight, new Color(255, 255, 255));
-
-        // Заголовок
-
 
         // Название
         String title = "LAGUNA CLIENT";
@@ -91,19 +87,14 @@ public class ClickGuiScreen extends Screen {
         RenderUtil.drawText(context, panelX + panelWidth/2 - titleWidth/2, panelY + 12, title,
                 new Color(255, 255, 255));
 
-        // Декоративная линия под названием
+        // Декоративная линия
         RenderUtil.drawRect(context, panelX + panelWidth/2 - 35, panelY + 28, 70, 2,
                 new Color(255, 255, 255));
-
-        // Drag зона (точечки)
-
 
         // Drag & Drop
         if (dragging) {
             panelX = mouseX - dragX;
             panelY = mouseY - dragY;
-
-            // Ограничения
             panelX = Math.max(0, Math.min(panelX, mc.getWindow().getScaledWidth() - panelWidth));
             panelY = Math.max(0, Math.min(panelY, mc.getWindow().getScaledHeight() - panelHeight));
         }
@@ -121,7 +112,7 @@ public class ClickGuiScreen extends Screen {
             categoryY += 34;
         }
 
-        // Рендер модулей (если выбрана категория)
+        // Рендер модулей
         if (selectedCategory != null) {
             renderModules(context);
         }
@@ -154,10 +145,8 @@ public class ClickGuiScreen extends Screen {
             barHeight = Math.max(30, Math.min(barHeight, viewHeight - 10));
             int barY = startY + (int)((scrollOffset / (float)maxScroll) * (viewHeight - barHeight));
 
-            // Фон скролл бара
             RenderUtil.drawRect(context, panelX + panelWidth - 12, startY, 4, viewHeight,
                     new Color(40, 40, 50, 150));
-            // Ползунок
             RenderUtil.drawRect(context, panelX + panelWidth - 12, barY, 4, barHeight,
                     new Color(0, 0, 0, 200));
         }
@@ -171,7 +160,6 @@ public class ClickGuiScreen extends Screen {
             int x = startX + (column * (moduleWidth + 10));
             int y = startY + (row * (moduleHeight + 5)) - scrollOffset;
 
-            // Проверяем, виден ли модуль
             if (y + moduleHeight > startY && y < startY + viewHeight) {
                 module.setX(x);
                 module.setY(y);
@@ -179,8 +167,12 @@ public class ClickGuiScreen extends Screen {
                 module.setHeight(moduleHeight);
                 module.render(context);
             }
-
             index++;
+        }
+
+        // Рендер меню настроек (ПОВЕРХ модулей)
+        for (ModuleElement module : visibleModules) {
+            module.renderMenu(context);
         }
     }
 
@@ -191,9 +183,8 @@ public class ClickGuiScreen extends Screen {
         int mouseX = (int)e.getMouseX();
         int mouseY = (int)e.getMouseY();
 
-        // Проверка на drag зону
-        if (mouseX >= panelX && mouseX <= panelX + panelWidth &&
-                mouseY >= panelY && mouseY <= panelY + 34) {
+        // Drag зона
+        if (mouseX >= panelX && mouseX <= panelX + panelWidth && mouseY >= panelY && mouseY <= panelY + 34) {
             dragging = true;
             dragX = mouseX - panelX;
             dragY = mouseY - panelY;
@@ -222,23 +213,36 @@ public class ClickGuiScreen extends Screen {
         }
     }
 
+    // Обновите метод onKey в ClickGuiScreen:
+
     @Subscribe
     public void onKey(EventKey e) {
         if (e.getAction() != 1) return;
 
-        // Обработка биндинга
+        // Сначала проверяем, не находится ли какое-то меню в режиме биндинга
         for (ModuleElement moduleElement : moduleElements) {
-            if (moduleElement.isBinding()) {
-                if (e.getKey() == 256) { // ESC отменяет биндинг
-                    moduleElement.setBinding(false);
-                } else {
-                    moduleElement.keyPressed(e.getKey());
+            if (moduleElement.getModule().getCategory() == selectedCategory.getCategory()) {
+                // Если меню открыто и в режиме биндинга
+                if (moduleElement.getSettingsMenu().isVisible() && moduleElement.getSettingsMenu().isBindingMode()) {
+                    if (e.getKey() == 256) {
+                        moduleElement.getModule().setBind(0);
+                    } else {
+                        moduleElement.getModule().setBind(e.getKey());
+                    }
+                    moduleElement.getSettingsMenu().setBindingMode(false);
+                    return;
                 }
+            }
+        }
+
+        // Проверяем бинды модулей для включения/выключения
+        for (Module module : Laguna.getInstance().getModuleManager().getModules()) {
+            if (module.getBind() == e.getKey() && module.getBind() != 0) {
+                module.Toggle();
                 return;
             }
         }
 
-        // Закрытие по ESC
         if (e.getKey() == 256) {
             mc.setScreen(null);
         }
